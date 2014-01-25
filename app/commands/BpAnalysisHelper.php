@@ -42,13 +42,18 @@ class BpAnalysisHelper extends Command {
             $this->info('Grabbing...');
             // Init links grabber queue object and call init method
             $queue = new $classname();
+
+            if (!$queue instanceof HtmlGrabberQueue) {
+                $this->error('Class must be instance of HtmlGrabberQueue.');
+                return false;
+            }
             // grab all links from remote page.
             $queue->grabAll();
 
             $this->info('Grab completed.');
         }
         else {
-            $this->error('Class ' . $classname . ' not exists');
+            $this->error('Class ' . $classname . ' not exists.');
         }
 	}
 
