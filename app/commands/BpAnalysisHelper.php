@@ -11,14 +11,14 @@ class BpAnalysisHelper extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'bps:historyurl';
+	protected $name = 'bps:grab';
 
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Run LinksHtmlGrabberQueue grabAll method.';
+	protected $description = 'Run grabAll method of assigned grabber queue.';
 
 	/**
 	 * Create a new command instance.
@@ -37,15 +37,19 @@ class BpAnalysisHelper extends Command {
 	 */
 	public function fire()
 	{
-        $url = $value = $this->argument('url');
+        $classname = $value = $this->argument('classname');
+        if (class_exists($classname)) {
+            $this->info('Grabbing...');
+            // Init links grabber queue object and call init method
+            $queue = new $classname();
+            // grab all links from remote page.
+            $queue->grabAll();
 
-        $this->info('Grabbing...');
-        // Init links grabber queue object and call init method
-        $queue = new LinksHtmlGrabberQueue();
-        // grab all links from remote page.
-        $queue->grabAll($url);
-
-        $this->info('Grab completed.');
+            $this->info('Grab completed.');
+        }
+        else {
+            $this->error('Class ' . $classname . ' not exists');
+        }
 	}
 
 	/**
@@ -56,7 +60,7 @@ class BpAnalysisHelper extends Command {
 	protected function getArguments()
 	{
 		return array(
-			array('url', InputArgument::OPTIONAL, 'Seed url for grabber.'),
+			array('classname', InputArgument::REQUIRED, 'Implementation of HtmlGrabberQueue'),
 		);
 	}
 
