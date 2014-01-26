@@ -7,6 +7,23 @@
 
 class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
     /**
+     * Initialization of Queue
+     * 
+     * @return void
+     */
+    public function init()
+    {
+        BuildingPropertySales::created(function($model) 
+        {
+            $historyUrl = HistoryUrl::whereRaw('sales_date = ? AND grabbed = 1', array($model->sales_date))->firstOrFail();
+            if ($historyUrl) {
+                $historyUrl->bps_id = $model->id;
+                $historyUrl->save();
+            }
+        });
+    }
+
+    /**
      * Get new node urls
      *
      * @param string url
@@ -14,7 +31,7 @@ class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
      */
     protected function getNewNodeUrls()
     {
-        $historyUrls = HistoryUrl::whereRaw('grabbed = 1 AND bps_id IS NULL')->get();
+        $historyUrls = HistoryUrl::whereRaw('grabbed = 1 AND bps_id IS NULL')->take(20)->get();
         $urls = array();
         foreach ($historyUrls as $url) {
             $urls[] = $url->url;
@@ -47,7 +64,7 @@ class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
                 return $model;
             });
             $htmlExtracter->extract();
-
+            // update bps 
         }, function($response) // failure callback
         {}, function($e) // exception callback
         {});

@@ -38,6 +38,16 @@ abstract class HtmlGrabberQueue {
      */
     public function __construct() 
     {
+        $this->init();
+    }
+    
+    /**
+     * Initialization of Queue
+     * 
+     * @return void
+     */
+    public function init()
+    {
     }
 
     /**
@@ -59,8 +69,6 @@ abstract class HtmlGrabberQueue {
                 $this->queue[] = $this->makeGrabber($nodeUrl);
             }
         }
-
-        Debugbar::info($this->queue);
 
         if (empty($this->queue)) {
             return false;
