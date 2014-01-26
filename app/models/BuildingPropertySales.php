@@ -4,9 +4,25 @@ class BuildingPropertySales extends Eloquent implements HtmlExtractableInterface
 	protected $guarded = array();
 
 	public static $rules = array(
-        'url' => 'required|url',
-        'date' => 'required|date_format:Y-m-d',
+        'region' => 'max:64',
+        'total_qty' => 'required|numeric',
+        'total_area' => 'required|numeric',
+        'sales_qty' => 'required|numeric',
+        'sales_area' => 'required|numeric',
+        'sales_average' => 'required|numeric',
+        'house_sales_average' => 'required|numeric',
+        'sales_date' => 'required|date_format:Y-m-d',
     );
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function($sales)
+        {
+            if ( ! $sales->isValid()) return false;
+        });
+    }
 
     public function isValid()
     {
