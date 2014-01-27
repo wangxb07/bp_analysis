@@ -88,7 +88,7 @@ abstract class HtmlGrabberQueue {
     {
         if (!empty($url)) {
             $this->grabbed[] = $url;
-            $grabber = $this->makeGrabber($url);
+            $grabber = $this->makeGrabber($url, true);
             $grabber->grab();
         }
 

@@ -28,10 +28,17 @@ class LinksHtmlGrabberQueue extends HtmlGrabberQueue {
      * Make new grabber
      * 
      * @param string $url
+     * @param boolean $isRoot
      * @return HtmlGrabber
      */
-    public function makeGrabber($url)
+    public function makeGrabber($url, $isRoot = false)
     {
+        if ($isRoot) {
+            $data = array();
+            $data['url'] = $url;
+            $data['sales_date'] = HistoryUrl::getDateFromLink($url);
+            HistoryUrl::create($data);
+        }
         $grabber = new HtmlGrabber($url, function($response) use ($url) // success callback
         {
             // init extracter
