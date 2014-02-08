@@ -14,9 +14,17 @@ class BuildingPropertySalesController extends BaseController
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function getIndex()
 	{
-        //return View::make('buildingpropertysales.index');
+        $region = Input::get('region');
+        $salesDate = Input::get('sales_date');
+
+        $sales = BuildingPropertySales::ofRegion($region)
+            ->ofSalesDate($salesDate)
+            ->orderBy('sales_date', 'DESC')
+            ->paginate(12);
+
+        return View::make('buildingpropertysales.index')->with('sales', $sales);
 	}
 
 	/**

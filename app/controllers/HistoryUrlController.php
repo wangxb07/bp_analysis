@@ -9,7 +9,7 @@ class HistoryUrlController extends BaseController {
 	 */
 	public function getIndex()
 	{
-        $urls = HistoryUrl::paginate(15);
+        $urls = HistoryUrl::orderBy('sales_date', 'DESC')->paginate(15);
         return View::make('historyurl.index')->with('urls', $urls);
 	}
 

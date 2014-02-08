@@ -33,9 +33,9 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li>{{ link_to_action('BuildingPropertySalesController@getManualFetch', 'Fetch') }}</li>
-            <li><a href="#contact">Contact</a></li>
+            <li class="{{ Request::is('/') ? 'active' : '' }}">{{ link_to_action('HomeController@index', 'Home') }}</li>
+            <li class="{{ Request::is('history-url*') ? 'active' : '' }}">{{ link_to_action('HistoryUrlController@getIndex', 'Urls') }}</li>
+            <li class="{{ Request::is('bp*') ? 'active' : '' }}">{{ link_to_action('BuildingPropertySalesController@getIndex', 'Sales') }}</li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -49,6 +49,10 @@
             <div class="alert alert-{{ $flash_message->status }}">{{ $flash_message->message }}</div>
           @endforeach
         @endif
+      </div>
+
+      <div class="row action-bar">
+        @yield('actionbar')
       </div>
 
       <div class="row main">

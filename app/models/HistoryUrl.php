@@ -12,7 +12,7 @@ class HistoryUrl extends Eloquent implements HtmlExtractableInterface {
         foreach ($html->find('#news_body p a') as $element) {
             $data = array();
             $data['url'] = $element->href;
-            $data['sales_date'] = $this->_getDateFromLink($element->href);
+            $data['sales_date'] = self::getDateFromLink($element->href);
             
             $validator = Validator::make($data, array(
                 'url' => 'required|url',
@@ -31,7 +31,7 @@ class HistoryUrl extends Eloquent implements HtmlExtractableInterface {
         }
     }
     
-    private function _getDateFromLink($link) {
+    public static function getDateFromLink($link) {
         $matches = array();
         if (!preg_match('/\d{4}-\d{2}-\d{2}/', $link, $matches)) {
             return '';

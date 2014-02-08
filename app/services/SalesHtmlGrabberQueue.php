@@ -15,6 +15,7 @@ class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
     {
         BuildingPropertySales::created(function($model) 
         {
+            // TODO 从属关系弄错了，history url 1 - N bps
             $historyUrl = HistoryUrl::whereRaw('sales_date = ? AND grabbed = 1', array($model->sales_date))->firstOrFail();
             if ($historyUrl) {
                 $historyUrl->bps_id = $model->id;
