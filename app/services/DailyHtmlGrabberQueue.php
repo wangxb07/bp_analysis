@@ -2,10 +2,10 @@
 
 /**
  * @class
- * SalesHtmlGrabberQueue
+ * DailyHtmlGrabberQueue
  */
 
-class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
+class DailyHtmlGrabberQueue extends HtmlGrabberQueue {
     /**
      * Initialization of Queue
      * 
@@ -13,12 +13,12 @@ class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
      */
     public function init()
     {
-        BuildingPropertySales::created(function($model) 
+        BuildingSalesDaily::created(function($model) 
         {
             // TODO 从属关系弄错了，history url 1 - N bps
-            $historyUrl = HistoryUrl::whereRaw('sales_date = ? AND grabbed = 1', array($model->sales_date))->first();
+            $historyUrl = HistoryUrl::whereRaw('daily_grabbed = 0 AND sales_date = ? AND grabbed = 1', array($model->sales_date))->first();
             if ($historyUrl) {
-                $historyUrl->bps_id = $model->id;
+                $historyUrl->daily_grabbed = true;
                 $historyUrl->save();
             }
         });
@@ -30,12 +30,16 @@ class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
      * @param string url
      * @return void
      */
-    protected function getNewNodeUrls()
+    public function getNewNodeUrls() 
     {
-        $historyUrls = HistoryUrl::whereRaw('grabbed = 1 AND bps_id IS NULL')->take(20)->get();
+        $historyUrls = HistoryUrl::whereRaw('grabbed = 1 AND daily_grabbed = 0')->take(20)->get();
         $urls = array();
+
+        $pattern = '/(\d+)(\.htm)$/i';
+        $replacement = '${1}_2$2';
+
         foreach ($historyUrls as $url) {
-            $urls[] = $url->url;
+            $urls[] = preg_replace($pattern, $replacement, $url->url);
         }
         return $urls;
     }
@@ -46,7 +50,7 @@ class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
      * @param string $url
      * @return HtmlGrabber
      */
-    public function makeGrabber($url)
+    public function makeGrabber($url) 
     {
         $grabber = new HtmlGrabber($url, function($response) use ($url) // success callback
         {
@@ -57,9 +61,13 @@ class SalesHtmlGrabberQueue extends HtmlGrabberQueue {
 
             $htmlExtracter->bindModel(function() use ($url)
             {
+                $pattern = '/(\d+)(_2)(\.htm)$/i';
+                $replacement = '$1$3';
+                $url = preg_replace($pattern, $replacement, $url);
+
                 // receive history url sales date and set to sales model
                 $historyUrl = HistoryUrl::where('url', $url)->firstOrFail();
-                $model = new BuildingPropertySales;
+                $model = new BuildingSalesDaily;
                 $model->sales_date = $historyUrl->sales_date;
 
                 return $model;

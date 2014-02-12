@@ -1,16 +1,16 @@
 <?php
 
-class BuildingPropertySales extends Eloquent implements HtmlExtractableInterface {
+class BuildingSalesDaily extends Eloquent implements HtmlExtractableInterface {
 	protected $guarded = array();
 
 	public static $rules = array(
+        'name' => 'max:45',
         'region' => 'max:64',
-        'total_qty' => 'required|numeric',
-        'total_area' => 'required|numeric',
-        'sales_qty' => 'required|numeric',
-        'sales_area' => 'required|numeric',
-        'sales_average' => 'required|numeric',
-        'house_sales_average' => 'required|numeric',
+        'qty' => 'required|numeric',
+        'price_average' => 'required|numeric',
+        'area_average' => 'required|numeric',
+        'type' => 'max:24',
+        'area' => 'required|numeric',
         'sales_date' => 'required|date_format:Y-m-d',
     );
 
@@ -56,35 +56,22 @@ class BuildingPropertySales extends Eloquent implements HtmlExtractableInterface
                 }
 
                 $salesInfo = array();
-                list(
-                    $salesInfo['region'],
-                    $salesInfo['total_qty'],
-                    $salesInfo['total_area'],
-                    $salesInfo['sales_qty'],
-                    $salesInfo['sales_area'],
-                    $salesInfo['sales_average'],
-                    $salesInfo['house_sales_average']) = $row;
+                if (count($row) == 7) {
+                    list(
+                        $salesInfo['name'],
+                        $salesInfo['region'],
+                        $salesInfo['qty'],
+                        $salesInfo['price_average'],
+                        $salesInfo['area_average'],
+                        $salesInfo['type'],
+                        $salesInfo['area']) = $row;
 
-                $salesInfo['sales_date'] = $this->sales_date;
-                self::create($salesInfo);
+                    $salesInfo['sales_date'] = $this->sales_date;
+
+                    self::create($salesInfo);
+                }
                 $cursor ++;
             }
         }
-    }
-
-    /**
-     * Scope of region
-     */
-    public function scopeOfRegion($query, $region)
-    {
-        return $query->where('region', 'LIKE', $region . '%');
-    }
-    
-    /**
-     * Scope of sales date
-     */
-    public function scopeOfSalesDate($query, $salesDate)
-    {
-        return $query->where('sales_date', 'LIKE', $salesDate . '%');
     }
 }

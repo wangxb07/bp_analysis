@@ -12,7 +12,7 @@ class CreateBuildingSalesDaily extends Migration {
 	public function up()
 	{
 		// create building_sales_daily table
-        Schema::create('building_sales_daily', function($table) 
+        Schema::create('building_sales_dailies', function($table) 
         {
             $table->increments('id');
             $table->integer('bps_id')->unsigned()->nullable();
@@ -38,7 +38,6 @@ class CreateBuildingSalesDaily extends Migration {
 	 */
 	public function down()
 	{
-        Schema::drop('building_sales_daily');
+        Schema::drop('building_sales_dailies');
 	}
-
 }
