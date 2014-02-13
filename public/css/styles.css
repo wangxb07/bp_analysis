@@ -8,3 +8,29 @@
 .message {
     margin-top: 5em;
 }
+
+.region-view .panel-summary .panel-body li.field {
+    padding: 0px 10px; 
+    line-height: 32px;
+}
+
+.region-view .panel-summary .panel-body li.field span.title {
+    display: inline-block;
+    width: 20%;
+}
+
+.region-view .panel-summary .panel-body li.field span.label-primary {
+    display: inline-block;
+    width: 15%;
+    text-align:right;
+}
+
+.region-view .panel-summary .panel-body li.field span.label-default {
+    display: inline-block;
+    width: 30%;
+    text-align:left;
+}
+
+.region-view .panel-summary .panel-body li.field span.badge {
+    margin-top: 8px;
+}

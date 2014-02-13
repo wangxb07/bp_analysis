@@ -15,6 +15,13 @@ Route::get('/', array(
     'uses' => 'HomeController@index'
 ));
 
-Route::controller('bp', 'BuildingPropertySalesController');
+// Route::controller('bp', 'BuildingPropertySalesController');
+Route::group(array('prefix' => 'bp'), function()
+{
+    Route::get('/', 'BuildingPropertySalesController@getIndex');
+
+    Route::get('/region/{region}', array('as' => 'bp_region', 'uses' => 'BuildingPropertySalesController@getRegion'));
+});
+
 Route::controller('history-url', 'HistoryUrlController');
 Route::controller('daily-info', 'DailyInfoController');

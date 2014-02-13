@@ -146,4 +146,46 @@ class BuildingPropertySalesController extends BaseController
 
         return $sendResponse();
     }
+
+    public function getRegion($region)
+    {
+        $total = $this->buildTotalSummary();
+        $regionTotal = $this->buildTotalSummary($region);
+
+        return View::make('buildingpropertysales.region')
+            ->with('region', $region)
+            ->with('total', $total)
+            ->with('regionTotal', $regionTotal);
+    }
+    
+    private function buildTotalSummary($region = '') {
+        $total = new stdClass;
+
+        $total->totalQty = 0;
+        $total->totalArea = 0;
+        $total->totalSalesQty = 0;
+        $total->totalSalesArea = 0;
+        $total->totalSalesAvg = 0;
+
+        if (empty($region)) {
+            $newest = BuildingPropertySales::ofRegion($region)
+                ->orderBy('sales_date', 'DESC')->first();
+            $newsetDate = $newest->sales_date;
+            
+            $total->totalQty = BuildingPropertySales::ofSalesDate($newsetDate)->sum('total_qty');
+            $total->totalArea = BuildingPropertySales::ofSalesDate($newsetDate)->sum('total_area');
+        }
+        else {
+            $newest = BuildingPropertySales::ofRegion($region)
+                ->orderBy('sales_date', 'DESC')->first();
+            $total->totalQty = $newest->total_qty;
+            $total->totalArea = $newest->total_area;
+        }
+
+        $total->totalSalesQty = BuildingPropertySales::ofRegion($region)->sum('sales_qty');
+        $total->totalSalesArea = BuildingPropertySales::ofRegion($region)->sum('sales_area');
+        $total->totalSalesAvg = BuildingPropertySales::ofRegion($region)->avg('sales_average');
+
+        return $total;
+    }
 }
