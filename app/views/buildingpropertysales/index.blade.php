@@ -11,36 +11,38 @@
 @stop
 
 @section('content')
-  {{ Route::currentRouteName() }}
-  <div class="col-md-12">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Region</th> 
-          <th>Total Qty</th>
-          <th>Total Area</th>
-          <th>Sales Qty</th>
-          <th>Sales Area</th>
-          <th>Sales Average</th>
-          <th>House Sales Average</th>
-          <th>Sales Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach ($sales as $row)
+  <div class="row region-index">
+    {{ Route::currentRouteName() }}
+    <div class="col-md-12">
+      <table class="table table-striped">
+        <thead>
           <tr>
-            <td>{{ $row->region }}</td>
-            <td>{{ $row->total_qty }}</td>
-            <td>{{ $row->total_area }}</td>
-            <td>{{ $row->sales_qty }}</td>
-            <td>{{ $row->sales_area }}</td>
-            <td>{{ $row->sales_average }}</td>
-            <td>{{ $row->house_sales_average }}</td>
-            <td>{{ $row->sales_date }}</td>
+            <th>Region</th> 
+            <th>Total Qty</th>
+            <th>Total Area</th>
+            <th>Sales Qty</th>
+            <th>Sales Area</th>
+            <th>Sales Average</th>
+            <th>House Sales Average</th>
+            <th>Sales Date</th>
           </tr>
-        @endforeach
-      </tbody>
-    </table>
-    <?php echo $sales->links(); ?>
+        </thead>
+        <tbody>
+          @foreach ($sales as $row)
+            <tr>
+              <td>{{ link_to_route('bp_region', $row->region, array($row->region)) }}</td>
+              <td>{{ $row->total_qty }}</td>
+              <td>{{ $row->total_area }}</td>
+              <td>{{ $row->sales_qty }}</td>
+              <td>{{ $row->sales_area }}</td>
+              <td>{{ $row->sales_average }}</td>
+              <td>{{ $row->house_sales_average }}</td>
+              <td>{{ $row->sales_date }}</td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+      <?php echo $sales->links(); ?>
+    </div>
   </div>
 @stop

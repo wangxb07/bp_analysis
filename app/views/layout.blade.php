@@ -60,9 +60,7 @@
         @yield('filter')
       </div>
       
-      <div class="row main">
-        @yield('content')
-      </div>
+      @yield('content')
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
