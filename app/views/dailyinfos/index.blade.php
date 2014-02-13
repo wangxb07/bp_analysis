@@ -1,7 +1,23 @@
 @extends('layout')
 
+@section('filter')
+
+  <div class="col-md-12">
+    {{ Former::inline_open()->action(action('DailyInfoController@getIndex'))->method('GET') }}
+    {{ Former::text('name') }}
+    {{ Former::select('type')->fromQuery(BuildingSalesDaily::select(DB::raw('type'))
+                                         ->groupBy('type')
+                                         ->orderBy('type')
+                                         ->get(), 'type', 'type')->addClass('form-control') }}
+
+    {{ Former::submit('Filter')->addClass('btn-primary') }}
+    {{ Former::close() }}
+  </div>
+
+@stop
+
 @section('content')
-  <div class="col-md-10">
+  <div class="col-md-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -33,14 +49,5 @@
 
     <?php echo $rows->links(); ?>
   </div>
-  <div class="col-md-2">
-    {{ Former::open()->action(action('DailyInfoController@getIndex'))->method('GET') }}
-    {{ Former::text('name') }}
-    {{ Former::select('type')->fromQuery(BuildingSalesDaily::select(DB::raw('type'))
-                                         ->groupBy('type')
-                                         ->orderBy('type')
-                                         ->get(), 'type', 'type')->addClass('form-control') }}
-    {{ Former::submit('Submit') }}
-    {{ Former::close() }}
-  </div>
+
 @stop

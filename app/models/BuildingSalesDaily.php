@@ -87,6 +87,8 @@ class BuildingSalesDaily extends Eloquent implements HtmlExtractableInterface {
      * Scope of type
      */
     public function scopeOfType($query, $type) {
-        return $query->where('type', $type);
+        if (!empty($type)) {
+            return $query->where('type', $type);
+        }
     }
 }

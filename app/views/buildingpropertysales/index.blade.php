@@ -1,8 +1,18 @@
 @extends('layout')
 
+@section('filter')
+  <div class="col-md-12">
+    {{ Former::inline_open()->action(action('BuildingPropertySalesController@getIndex'))->method('GET') }}
+    {{ Former::text('region')->placeholder('Region') }}
+    {{ Former::date('sales_date')->placeholder('Date') }}
+    {{ Former::submit('Filter')->addClass('btn-primary') }}
+    {{ Former::close() }}
+  </div>
+@stop
+
 @section('content')
   {{ Route::currentRouteName() }}
-  <div class="col-md-10">
+  <div class="col-md-12">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -32,12 +42,5 @@
       </tbody>
     </table>
     <?php echo $sales->links(); ?>
-  </div>
-  <div class="col-md-2">
-    {{ Former::open()->action(action('BuildingPropertySalesController@getIndex'))->method('GET') }}
-    {{ Former::text('region') }}
-    {{ Former::date('sales_date') }}
-    {{ Former::submit('Submit') }}
-    {{ Former::close() }}
   </div>
 @stop

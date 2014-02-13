@@ -36,6 +36,7 @@
             <li class="{{ Request::is('/') ? 'active' : '' }}">{{ link_to_action('HomeController@index', 'Home') }}</li>
             <li class="{{ Request::is('history-url*') ? 'active' : '' }}">{{ link_to_action('HistoryUrlController@getIndex', 'Urls') }}</li>
             <li class="{{ Request::is('bp*') ? 'active' : '' }}">{{ link_to_action('BuildingPropertySalesController@getIndex', 'Sales') }}</li>
+            <li class="{{ Request::is('daily-info*') ? 'active' : '' }}">{{ link_to_action('DailyInfoController@getIndex', 'Daily') }}</li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -54,7 +55,11 @@
       <div class="row action-bar">
         @yield('actionbar')
       </div>
-
+      
+      <div class="row filter">
+        @yield('filter')
+      </div>
+      
       <div class="row main">
         @yield('content')
       </div>
