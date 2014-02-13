@@ -74,4 +74,19 @@ class BuildingSalesDaily extends Eloquent implements HtmlExtractableInterface {
             }
         }
     }
+
+    /**
+     * Scope of name
+     */
+    public function scopeOfName($query, $name)
+    {
+        return $query->where('name', 'LIKE', $name . '%');
+    }
+
+    /**
+     * Scope of type
+     */
+    public function scopeOfType($query, $type) {
+        return $query->where('type', $type);
+    }
 }

@@ -17,3 +17,4 @@ Route::get('/', array(
 
 Route::controller('bp', 'BuildingPropertySalesController');
 Route::controller('history-url', 'HistoryUrlController');
+Route::controller('daily-info', 'DailyInfoController');
