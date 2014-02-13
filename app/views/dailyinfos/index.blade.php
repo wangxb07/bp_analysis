@@ -8,11 +8,22 @@
     {{ Former::select('type')->fromQuery(BuildingSalesDaily::select(DB::raw('type'))
                                          ->groupBy('type')
                                          ->orderBy('type')
-                                         ->get(), 'type', 'type')->addClass('form-control') }}
+                                         ->get(), 'type', 'type') }}
 
     {{ Former::submit('Filter')->addClass('btn-primary') }}
     {{ Former::close() }}
   </div>
+
+@stop
+
+@section('footer')
+
+  <script>
+   (function($) {
+     console.log($('select#type'));
+     $('select#type').prepend('<option value="">All</option>');
+   })(jQuery);
+  </script>
 
 @stop
 
