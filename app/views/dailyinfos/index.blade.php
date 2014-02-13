@@ -36,7 +36,7 @@
           @foreach ($rows as $row)
             <tr>
               <td>{{ $row->name }}</td>
-              <td>{{ $row->region }}</td>
+              <td>{{ link_to_route('bp_region', $row->region, array($row->region)) }}</td>
               <td>{{ $row->qty }}</td>
               <td>{{ $row->price_average }}</td>
               <td>{{ $row->area_average }}</td>
