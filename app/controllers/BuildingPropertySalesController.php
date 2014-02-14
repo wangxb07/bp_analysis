@@ -152,10 +152,14 @@ class BuildingPropertySalesController extends BaseController
         $total = $this->buildTotalSummary();
         $regionTotal = $this->buildTotalSummary($region);
 
+        $properties = BuildingSalesDaily::select(DB::raw('name, SUM(qty) as total_qty, AVG(price_average) as price_avg'))
+            ->ofRegion($region)->groupBy('name')->orderBy('total_qty', 'DESC')->get();
+
         return View::make('buildingpropertysales.region')
             ->with('region', $region)
             ->with('total', $total)
-            ->with('regionTotal', $regionTotal);
+            ->with('regionTotal', $regionTotal)
+            ->with('properties', $properties);
     }
     
     private function buildTotalSummary($region = '') {

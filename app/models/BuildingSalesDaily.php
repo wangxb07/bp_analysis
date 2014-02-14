@@ -76,6 +76,14 @@ class BuildingSalesDaily extends Eloquent implements HtmlExtractableInterface {
     }
 
     /**
+     * Scope of region
+     */
+    public function scopeOfRegion($query, $region)
+    {
+        return $query->where('region', 'LIKE', $region . '%');
+    }
+
+    /**
      * Scope of name
      */
     public function scopeOfName($query, $name)

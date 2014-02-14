@@ -7,7 +7,9 @@
 		"laravel/framework": "4.1.*",
 		"anahkiasen/former": "dev-master",
 		"yangqi/htmldom": "dev-master",
-		"jyggen/curl": "dev-master" 
+		"jyggen/curl": "dev-master",
+		"khill/lavacharts": "dev-master",
+		"eternicode/bootstrap-datepicker": "dev-master"
 	},
 	"require-dev": {
 		"way/generators": "dev-master",

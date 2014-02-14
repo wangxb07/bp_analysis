@@ -18,7 +18,7 @@
 
 @section('footer')
 
-  <script>
+  <script type="text/javascript" >
    (function($) {
      console.log($('select#type'));
      $('select#type').prepend('<option value="">All</option>');
