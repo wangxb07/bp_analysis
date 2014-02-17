@@ -4,7 +4,7 @@
   <div class="col-md-12">
     {{ Former::inline_open()->action(action('BuildingPropertySalesController@getIndex'))->method('GET') }}
     {{ Former::text('region')->placeholder('Region') }}
-    {{ Former::date('sales_date')->placeholder('Date') }}
+    {{ Former::text('sales_date')->placeholder('Date YYYY-mm-dd...') }}
     {{ Former::submit('Filter')->addClass('btn-primary') }}
     {{ Former::close() }}
   </div>
@@ -45,4 +45,17 @@
       <?php echo $sales->links(); ?>
     </div>
   </div>
+
+@stop
+
+@section('footer')
+
+  <script type="text/javascript">
+   require(['jquery', 'bootstrap-datepicker'], function($) {
+     $('#sales_date').datepicker({
+       format: 'yyyy-mm-dd',
+     });
+   });
+  </script>
+
 @stop

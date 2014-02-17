@@ -108,7 +108,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
 		'Former\FormerServiceProvider',
-		'Barryvdh\Debugbar\ServiceProvider',
+		// 'Barryvdh\Debugbar\ServiceProvider',
 		'Way\Generators\GeneratorsServiceProvider',
 		'Yangqi\Htmldom\HtmldomServiceProvider',
 
@@ -179,7 +179,7 @@ return array(
 		'View'            => 'Illuminate\Support\Facades\View',
 
 		'Former' => 'Former\Facades\Former',
-		'Debugbar' => 'Barryvdh\Debugbar\Facade',
+		// 'Debugbar' => 'Barryvdh\Debugbar\Facade',
 		'Htmldom' => 'Yangqi\Htmldom\Htmldom',
 	),
 

@@ -40,7 +40,8 @@
 		]
 	},
 	"config": {
-		"preferred-install": "dist"
+		"preferred-install": "dist",
+		"component-dir": "public"
 	},
 	"minimum-stability": "dev"
 }

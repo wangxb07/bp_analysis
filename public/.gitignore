@@ -1,1 +1,6 @@
 /components
+/bootstrap
+/bootstrap-*
+/jquery
+/require.*
+/require-*

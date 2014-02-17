@@ -16,6 +16,15 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
     {{ HTML::style('css/styles.css') }}
+    {{ HTML::style('require.css') }}
+
+    {{ HTML::script('require.js') }}
+
+    <script type="text/javascript">
+     var public_path = '{{ asset('') }}';
+    </script>
+
+    {{ HTML::script('require.config.js') }}
 
     @yield('head')
   </head>
@@ -63,13 +72,9 @@
       @yield('content')
     </div>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    {{ HTML::script('js/application.js') }}
-
+    <!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script> -->
     @yield('footer')
   </body>
 </html>

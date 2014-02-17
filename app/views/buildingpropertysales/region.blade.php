@@ -82,7 +82,8 @@
 @section('footer')
 
   <script type="text/javascript" >
-   (function($) {
+
+   require(["jquery"], function($) {
      // hide more rows
      var hideMoreRows = function() {
        $('.panel-property table tr').each(function(i, e) {
@@ -91,10 +92,6 @@
          }
        });
      };
-
-     /*var bt = $('<button type="button" class="btn btn-default btn-lg" id="more-property">
-            更多<span class="glyphicon glyphicon-chevron-down"></span>
-          </button>');*/
 
      var bt = $('<button></button>');
      bt.attr('type', 'button');
@@ -122,8 +119,8 @@
        hideMoreRows();
        $('.panel-property .panel-body').append(bt);
      }
+   });
 
-   })(jQuery);
   </script>
 
 @stop
