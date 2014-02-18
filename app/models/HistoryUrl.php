@@ -3,7 +3,17 @@
 class HistoryUrl extends Eloquent implements HtmlExtractableInterface {
 	protected $guarded = array();
 
-	public static $rules = array();
+	public static $rules = array(
+        'url' => 'max:64|exists:history_urls, url',
+    );
+
+    public function isValid()
+    {
+        return Validator::make(
+            $this->toArray(),
+            self::$rules
+        )->passes();
+    }
 
     public function extract(HtmlExtracter $extracter) 
     {

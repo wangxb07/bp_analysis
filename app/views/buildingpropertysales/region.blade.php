@@ -3,14 +3,7 @@
 @section('content')
   <!-- Summary panel -->
   <div class="row content region-view">
-    <div class="col-md-6">
-      <div class="panel panel-default panel-total">
-        <div class="panel-heading"><h4>图表 <span class="label label-default">{{ $region }}</span></h4></div>
-        <div class="panel-body">
-
-        </div>
-      </div>
-    </div>
+    
     <div class="col-md-6">
       <div class="panel panel-default panel-summary">
         <div class="panel-heading"><h4>统计 <span class="label label-default">{{ $region }}</span></h4></div>
@@ -47,6 +40,20 @@
       </div>
 
       <!-- Property panel -->
+    </div>
+
+    <div class="col-md-12">
+      <div class="panel panel-default panel-total">
+        <div class="panel-heading"><h4>图表 <span class="label label-default">{{ $region }}</span></h4></div>
+        <div class="panel-body">
+          {{ Lava::LineChart('RegionSalesAvg')->outputInto('region_sales_price_avg') }}
+          {{ Lava::div() }}
+
+          @if (Lava::hasErrors())
+            {{ Lava::getErrors() }}
+          @endif
+        </div>
+      </div>
     </div>
 
     <div class="col-md-12">

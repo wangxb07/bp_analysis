@@ -155,14 +155,43 @@ class BuildingPropertySalesController extends BaseController
         $properties = BuildingSalesDaily::select(DB::raw('name, SUM(qty) as total_qty, AVG(price_average) as price_avg'))
             ->ofRegion($region)->groupBy('name')->orderBy('total_qty', 'DESC')->get();
 
+        // building chart
+        $this->buildChart($region);
+
         return View::make('buildingpropertysales.region')
             ->with('region', $region)
             ->with('total', $total)
             ->with('regionTotal', $regionTotal)
             ->with('properties', $properties);
     }
+
+    private function buildChart($region) {
+        $regiionSalesTable = Lava::DataTable('RegionSalesAvg');
+     
+        $regiionSalesTable->addColumn('string', 'Date', 'date')
+            ->addColumn('number', 'SalesPrice', 'sales_price')
+            ->addColumn('number', 'HouseSalesPrice', 'house_sales_price');
+        
+        $rows = BuildingPropertySales::select(DB::raw('avg(sales_average) as sales_avg, avg(house_sales_average) as house_sales_avg, concat(year(sales_date), "/", month(sales_date)) as sales_month'))
+            ->ofRegion($region)
+            ->groupBy(DB::raw('concat(year(sales_date), "/", month(sales_date))'))
+            ->orderBy('sales_date')->get();
+
+        foreach ($rows as $i => $row) {
+            $data = array(
+                $row->sales_month,
+                round($row->sales_avg, 2), 
+                round($row->house_sales_avg, 2),
+            );
+     
+            $regiionSalesTable->addRow($data);
+        }
+     
+        Lava::LineChart('RegionSalesAvg')->title('Region Sales Price Average');
+    }
     
-    private function buildTotalSummary($region = '') {
+    private function buildTotalSummary($region = '') 
+    {
         $total = new stdClass;
 
         $total->totalQty = 0;

@@ -1,8 +1,8 @@
 <?php
 
-use jyggen\Curl\Request;
-use jyggen\Curl\Response;
-use jyggen\Curl\Exception\CurlErrorException;
+use Jyggen\Curl\Request;
+use Jyggen\Curl\Response;
+use Jyggen\Curl\Exception\CurlErrorException;
 
 class HtmlGrabber {
     /**

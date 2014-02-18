@@ -26,10 +26,17 @@ class BuildingPropertySales extends Eloquent implements HtmlExtractableInterface
 
     public function isValid()
     {
-        return Validator::make(
+        $validator =  Validator::make(
             $this->toArray(),
             self::$rules
-        )->passes();
+        );
+        if ($validator->passes()) {
+            return true;
+        }
+        else {
+            Log::warning($validator->messages());
+            return false;
+        }
     }
 
     public function extract(HtmlExtracter $extracter) {

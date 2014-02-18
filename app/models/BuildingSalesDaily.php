@@ -29,7 +29,14 @@ class BuildingSalesDaily extends Eloquent implements HtmlExtractableInterface {
         return Validator::make(
             $this->toArray(),
             self::$rules
-        )->passes();
+        );
+        if ($validator->passes()) {
+            return true;
+        }
+        else {
+            Log::warning($validator->messages());
+            return false;
+        }
     }
 
     public function extract(HtmlExtracter $extracter) {
