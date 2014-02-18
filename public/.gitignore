@@ -2,7 +2,8 @@
 /bootstrap
 /bootstrap-*
 /jquery
-/require.*
+/require.css
+/require.js
 /require-*
 /packages
 
