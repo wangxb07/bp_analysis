@@ -4,15 +4,33 @@ class HistoryUrl extends Eloquent implements HtmlExtractableInterface {
 	protected $guarded = array();
 
 	public static $rules = array(
-        'url' => 'max:64|exists:history_urls, url',
+        'url' => 'required|unique:history_urls',
+        'sales_date' => 'required|date_format:Y-m-d',
     );
+
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function($sales)
+        {
+            if ( ! $sales->isValid()) return false;
+        });
+    }
 
     public function isValid()
     {
-        return Validator::make(
+        $validator =  Validator::make(
             $this->toArray(),
             self::$rules
-        )->passes();
+        );
+        if ($validator->passes()) {
+            return true;
+        }
+        else {
+            Log::warning($validator->messages());
+            return false;
+        }
     }
 
     public function extract(HtmlExtracter $extracter) 
@@ -24,20 +42,7 @@ class HistoryUrl extends Eloquent implements HtmlExtractableInterface {
             $data['url'] = $element->href;
             $data['sales_date'] = self::getDateFromLink($element->href);
             
-            $validator = Validator::make($data, array(
-                'url' => 'required|url',
-                'sales_date' => 'required|date_format:Y-m-d',
-            ));
-            if ($validator->fails()) {
-                Log::error('data from extract validate fails, this data is ' . $element->href);
-                continue;
-            }
-            else {
-                $exist = self::where('url', $element->href)->count();
-                if ($exist == 0) {
-                    self::create($data);
-                }
-            }
+            self::create($data);
         }
     }
     

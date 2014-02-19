@@ -84,7 +84,10 @@ class BuildingPropertySales extends Eloquent implements HtmlExtractableInterface
      */
     public function scopeOfRegion($query, $region)
     {
-        return $query->where('region', 'LIKE', $region . '%');
+        if (!empty($region)) {
+            return $query->where('region', 'LIKE', $region . '%');
+        }
+        return $query;
     }
     
     /**
@@ -92,6 +95,9 @@ class BuildingPropertySales extends Eloquent implements HtmlExtractableInterface
      */
     public function scopeOfSalesDate($query, $salesDate)
     {
-        return $query->where('sales_date', 'LIKE', $salesDate . '%');
+        if (!empty($salesDate)) {
+            return $query->where('sales_date', $salesDate);
+        }
+        return $query;
     }
 }

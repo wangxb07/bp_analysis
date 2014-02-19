@@ -53,7 +53,7 @@ class LinksHtmlGrabberQueue extends HtmlGrabberQueue {
             });
 
             $htmlExtracter->extract();
-
+            
             // update url grabbed status
             return HistoryUrl::where('url', $url)->update(array('grabbed' => true));
         }, function($response) // failure callback
@@ -61,6 +61,9 @@ class LinksHtmlGrabberQueue extends HtmlGrabberQueue {
         }, function($e) use ($url) // exception callback
         {
             $message = $e->getMessage();
+            
+            Log::error('HtmlGrabber occur exception: ' . $message);
+
             if (preg_match('/Connection timed/', $message)) { // timeout process
                 $historyUrl = HistoryUrl::where('url', $url)->firstOrFail();
                 if ($historyUrl) {

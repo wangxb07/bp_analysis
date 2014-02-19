@@ -9,6 +9,7 @@ class BuildingPropertySalesController extends BaseController
     {
         $this->beforeFilter('csrf', array('on' => 'post'));
     }
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -24,7 +25,21 @@ class BuildingPropertySalesController extends BaseController
             ->orderBy('sales_date', 'DESC')
             ->paginate(12);
 
-        return View::make('buildingpropertysales.index')->with('sales', $sales);
+        $sales->appends(array(
+            'region' => Input::get('region'),
+            'sales_date' => Input::get('sales_date'),
+        ));
+        
+        // get current sales date
+        if (count($sales) > 0) {
+            $summary = $this->buildTotalSummary($region, $sales[0]->sales_date);
+            $salesDate = $sales[0]->sales_date;        
+            $this->buildSalesQtyPieChart($salesDate);
+        }
+
+        return View::make('buildingpropertysales.index')->with('sales', $sales)
+            ->with('summary', $summary)
+            ->with('date', $salesDate);
 	}
 
 	/**
@@ -92,61 +107,10 @@ class BuildingPropertySalesController extends BaseController
 	}
     
     /**
-     * Manual fetch form 
-     *
-     * @retrun Response
+     * region view action
+     * @param string $region region name
+     * @return void
      */
-    public function getManualFetch() 
-    {
-        return View::make('buildingpropertysales.manual_fetch');
-    }
-
-    public function postManualFetch()
-    {
-        $sendResponse = function() {
-            return Redirect::action('BuildingPropertySalesController@getManualFetch')
-            ->with('flash_messages', $this->messages);
-        };
-
-        $rules = array(
-            'url' => 'required|url',
-            'date' => 'required|date_format:Y-m-d',
-        );
-
-        $validator = Validator::make(Input::all(), $rules);
-
-        if ($validator->fails()) {
-            return $sendResponse()->withErrors($validator);
-        }
-
-        $url = Input::get('url');
-        $salesDate = Input::get('date');
-        $charset = Input::get('charset');
-        $contents = $this->getContents($url);
-
-        if (!$contents) {
-            return $sendResponse();
-        }
-
-        $htmlExtracter = new HtmlExtracter();
-
-        $htmlExtracter->fillHtmlDom($contents);
-        $htmlExtracter->setCharset($charset);
-
-        $htmlExtracter->bindModel(function() use ($salesDate)
-        {
-            $model = new BuildingPropertySales;
-            $model->sales_date = $salesDate;
-            return $model;
-        });
-
-        $htmlExtracter->extract();
-
-        $this->pushMessage('success', 'Fetch data successed!');
-
-        return $sendResponse();
-    }
-
     public function getRegion($region)
     {
         $total = $this->buildTotalSummary();
@@ -156,7 +120,7 @@ class BuildingPropertySalesController extends BaseController
             ->ofRegion($region)->groupBy('name')->orderBy('total_qty', 'DESC')->get();
 
         // building chart
-        $this->buildChart($region);
+        $this->buildRegionViewChart($region);
 
         return View::make('buildingpropertysales.region')
             ->with('region', $region)
@@ -165,7 +129,13 @@ class BuildingPropertySalesController extends BaseController
             ->with('properties', $properties);
     }
 
-    private function buildChart($region) {
+    /**
+     * build region view chart
+     * @param string $region
+     * @return void
+     */
+    private function buildRegionViewChart($region) 
+    {
         $regiionSalesTable = Lava::DataTable('RegionSalesAvg');
      
         $regiionSalesTable->addColumn('string', 'Date', 'date')
@@ -189,8 +159,36 @@ class BuildingPropertySalesController extends BaseController
      
         Lava::LineChart('RegionSalesAvg')->title('Region Sales Price Average');
     }
+
+    /**
+     * build pie chart for sales qty 
+     */
+    private function buildSalesQtyPieChart($salesDate)
+    {
+        $rows = BuildingPropertySales::ofSalesDate($salesDate)->where('sales_qty', '>', 0)->get();
+        
+        $table = Lava::DataTable('RegionSalesQty');
+        $table->addColumn('string', 'Region', 'region')
+            ->addColumn('number', 'Qty', 'sales_qty');
+        
+        foreach ($rows as $key => $row) {
+            $table->addRow(array(
+                $row->region,
+                $row->sales_qty,
+            ));
+        }
+
+        Lava::PieChart('RegionSalesQty')->title('Region Sales Qty');
+    }
     
-    private function buildTotalSummary($region = '') 
+    /**
+     * build total summary helper method
+     * @param string $region
+     * @param string $salesDate
+     *
+     * @return stdClass
+     */
+    private function buildTotalSummary($region = '', $salesDate = '') 
     {
         $total = new stdClass;
 
@@ -200,24 +198,30 @@ class BuildingPropertySalesController extends BaseController
         $total->totalSalesArea = 0;
         $total->totalSalesAvg = 0;
 
-        if (empty($region)) {
-            $newest = BuildingPropertySales::ofRegion($region)
-                ->orderBy('sales_date', 'DESC')->first();
+        if (empty($region) && empty($salesDate)) {
+            $newest = BuildingPropertySales::orderBy('sales_date', 'DESC')->first();
             $newsetDate = $newest->sales_date;
             
             $total->totalQty = BuildingPropertySales::ofSalesDate($newsetDate)->sum('total_qty');
             $total->totalArea = BuildingPropertySales::ofSalesDate($newsetDate)->sum('total_area');
         }
+        elseif (!empty($salesDate) && empty($region)) {
+            $total->totalQty = BuildingPropertySales::ofSalesDate($salesDate)->sum('total_qty');
+            $total->totalArea = BuildingPropertySales::ofSalesDate($salesDate)->sum('total_area');
+        }
         else {
-            $newest = BuildingPropertySales::ofRegion($region)
+            $newest = BuildingPropertySales::ofRegion($region)->ofSalesDate($salesDate)
                 ->orderBy('sales_date', 'DESC')->first();
             $total->totalQty = $newest->total_qty;
             $total->totalArea = $newest->total_area;
         }
 
-        $total->totalSalesQty = BuildingPropertySales::ofRegion($region)->sum('sales_qty');
-        $total->totalSalesArea = BuildingPropertySales::ofRegion($region)->sum('sales_area');
-        $total->totalSalesAvg = BuildingPropertySales::ofRegion($region)->avg('sales_average');
+        $total->totalSalesQty = BuildingPropertySales::ofRegion($region)
+            ->ofSalesDate($salesDate)->sum('sales_qty');
+        $total->totalSalesArea = BuildingPropertySales::ofRegion($region)
+            ->ofSalesDate($salesDate)->sum('sales_area');
+        $total->totalSalesAvg = BuildingPropertySales::ofRegion($region)
+            ->ofSalesDate($salesDate)->avg('sales_average');
 
         return $total;
     }

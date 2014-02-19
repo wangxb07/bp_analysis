@@ -26,7 +26,7 @@ class BuildingSalesDaily extends Eloquent implements HtmlExtractableInterface {
 
     public function isValid()
     {
-        return Validator::make(
+        $validator = Validator::make(
             $this->toArray(),
             self::$rules
         );

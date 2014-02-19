@@ -31,8 +31,8 @@
             </li>
 
             <li class="field list-group-item">
-              <span class="badge">{{ round($regionTotal->totalSalesAvg, 2) }} 平米/元</span>
-              <span class="title">销售均价</span> <span class="label label-primary">{{ round($regionTotal->totalSalesAvg / $total->totalSalesAvg * 100, 2) }}%</span> * <span class="label label-default">{{ round($total->totalSalesAvg, 2) }} 平米/元</span>
+              <span class="badge">{{ round($regionTotal->totalSalesAvg, 2) }} 元/平</span>
+              <span class="title">销售均价</span> <span class="label label-primary">{{ round($regionTotal->totalSalesAvg / $total->totalSalesAvg * 100, 2) }}%</span> * <span class="label label-default">{{ round($total->totalSalesAvg, 2) }} 元/平</span>
             </li>
           </ul>
 
@@ -74,7 +74,7 @@
                 <tr>
                   <td>{{ $property->name }}</td>
                   <td>{{ $property->total_qty }} 套</td>
-                  <td>{{ round($property->price_avg, 2) }} 平米/元</td>
+                  <td>{{ round($property->price_avg, 2) }} 元/平</td>
                 </tr>
               @endforeach
             </tbody>

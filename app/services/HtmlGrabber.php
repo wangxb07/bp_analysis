@@ -43,6 +43,8 @@ class HtmlGrabber {
         $this->request = new Request($url);
         $this->request->setOption(CURLOPT_ENCODING, "gzip");
         $this->request->setOption(CURLOPT_CONNECTTIMEOUT, 30);
+        $this->request->setOption(CURLOPT_FOLLOWLOCATION, true);
+        $this->request->setOption(CURLOPT_MAXREDIRS, 3);
 
         // all callback closure call in method $this->grab().
         $this->successCallback = $successCallback;

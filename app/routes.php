@@ -10,10 +10,13 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
-
-Route::get('/', array(
-    'uses' => 'HomeController@index'
-));
+Route::group(array(), function()
+{
+    Route::get('/', array(
+        'uses' => 'HomeController@index'
+    ));
+    Route::post('/grab/newest', array('uses' => 'HomeController@grabNewestInfo'));
+});
 
 // Route::controller('bp', 'BuildingPropertySalesController');
 Route::group(array('prefix' => 'bp'), function()
